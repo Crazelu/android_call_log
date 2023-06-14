@@ -1,5 +1,5 @@
 name: call_log
-description: A simple demo Flutter app for Android that fetches paginated call information from device call log.
+description: A simple Flutter app for Android that fetches paginated call information from device call log.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1

@@ -1,6 +1,6 @@
 # call_log
 
-A simple demo Flutter app for Android that fetches paginated call information from device call log.
+A simple Flutter app for Android that fetches paginated call information from device call log.
 Only supported by Android because, yunno, iOS is all about 'privacy'.
 
 ## Call Info Details
