@@ -78,11 +78,7 @@ public class MainActivity extends FlutterActivity {
         if(!doesAppHavePermissions()){
                 ActivityCompat.requestPermissions(
                         activity,
-                        new String[]{
-                                Manifest.permission.READ_CALL_LOG,
-                                Manifest.permission.READ_CONTACTS,
-                                Manifest.permission.WRITE_CALL_LOG
-                        },
+                        new String[]{ Manifest.permission.READ_CALL_LOG },
                         13
                 );
         }else{
@@ -92,12 +88,7 @@ public class MainActivity extends FlutterActivity {
 
     private boolean doesAppHavePermissions() {
         try{
-            int readContactsStatus = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS);
-            int readCallLogStatus = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG);
-            int writeCallLogStatus = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG);
-
-                return  readContactsStatus == readCallLogStatus && readCallLogStatus == writeCallLogStatus
-                      && writeCallLogStatus  == PackageManager.PERMISSION_GRANTED;
+            return   ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED ;
         }catch(Exception e){
             Log.e("CallLogManager", e.toString());
             return false;
