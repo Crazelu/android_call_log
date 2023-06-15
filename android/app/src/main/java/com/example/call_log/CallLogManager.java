@@ -1,17 +1,11 @@
 package com.example.call_log;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.CallLog;
-import android.util.Log;
-
 import androidx.annotation.RequiresApi;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class CallLogManager {
@@ -26,10 +20,11 @@ public class CallLogManager {
     public ArrayList<HashMap<String, Object>> getCallLog(int page, int limit) {
         ArrayList<HashMap<String, Object>> callLog = new ArrayList<>();
 
-        int offset = (page -1) * limit;
-
-         cursor = cursor==null? context.getContentResolver().query( CallLog.Calls.CONTENT_URI,
-                null,null, null, CallLog.Calls.DATE+" DESC"): cursor;
+         cursor = cursor == null? context.getContentResolver().query(
+                 CallLog.Calls.CONTENT_URI,
+                null,null, null,
+                 CallLog.Calls.DATE+" DESC")
+                 : cursor;
 
         int number = cursor.getColumnIndex( CallLog.Calls.NUMBER );
         int type = cursor.getColumnIndex( CallLog.Calls.TYPE );
@@ -37,7 +32,7 @@ public class CallLogManager {
         int duration = cursor.getColumnIndex( CallLog.Calls.DURATION);
         int name = cursor.getColumnIndex( CallLog.Calls.CACHED_NAME);
 
-        int count = offset;
+        int count = (page -1) * limit;
 
         while ( cursor.moveToNext() ) {
             if(count == limit * page) break;
@@ -80,6 +75,7 @@ public class CallLogManager {
 
             callLog.add(callInfo);
            }
+
         return callLog;
     }
 

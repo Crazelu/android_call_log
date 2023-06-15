@@ -6,14 +6,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
@@ -33,7 +30,6 @@ public class MainActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         activity = getActivity();
         callLogManager = new CallLogManager(getContext());
-        Log.i("CallLogManager", "Configuring Engine");
 
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
@@ -42,13 +38,13 @@ public class MainActivity extends FlutterActivity {
                             switch (call.method){
                                 case "getCallLog":
                                     if(!doesAppHavePermissions()){
-                                        result.error("01", "Permissions not granted. Invoke `requestPermission` first!", null);
+                                        result.error("001", "Permissions not granted. Invoke `requestPermission` first!", null);
                                         break;
                                     }
-                                    ArrayList<HashMap<String, Object>> callLog = callLogManager.getCallLog(
-                                            call.argument("page"),
-                                            call.argument("itemsPerPage")
-                                    );
+                                    int page =  call.argument("page") == null ? 1 : call.argument("page");
+                                    int limit =  call.argument("itemsPerPage") == null ? 10 : call.argument("itemsPerPage");
+
+                                    ArrayList<HashMap<String, Object>> callLog = callLogManager.getCallLog(page, limit);
                                     result.success(callLog);
                                     break;
 
@@ -58,9 +54,7 @@ public class MainActivity extends FlutterActivity {
 
                                 default:
                                     result.notImplemented();
-
                             }
-
                         }
                 );
     }
@@ -70,7 +64,6 @@ public class MainActivity extends FlutterActivity {
         callLogManager.release();
         callLogManager = new CallLogManager(getContext());
         super.detachFromFlutterEngine();
-
     }
 
 
@@ -83,16 +76,15 @@ public class MainActivity extends FlutterActivity {
 
     private void requestPermissions(){
         if(!doesAppHavePermissions()){
-
-
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.READ_CALL_LOG,
+                ActivityCompat.requestPermissions(
+                        activity,
+                        new String[]{
+                                Manifest.permission.READ_CALL_LOG,
                                 Manifest.permission.READ_CONTACTS,
-                                Manifest.permission.WRITE_CALL_LOG},
-                        13);
-
-
-
+                                Manifest.permission.WRITE_CALL_LOG
+                        },
+                        13
+                );
         }else{
             result.success(true);
         }
@@ -106,8 +98,6 @@ public class MainActivity extends FlutterActivity {
 
                 return  readContactsStatus == readCallLogStatus && readCallLogStatus == writeCallLogStatus
                       && writeCallLogStatus  == PackageManager.PERMISSION_GRANTED;
-
-
         }catch(Exception e){
             Log.e("CallLogManager", e.toString());
             return false;
@@ -128,7 +118,6 @@ public class MainActivity extends FlutterActivity {
                 }
                 break;
             }
-
         }
     }
 
